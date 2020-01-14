@@ -28,12 +28,14 @@ function enableButton(button) {
 
 function startTimer() {
     disableButton(startButtonElement);
+    enableButton(stopButtonElement);
     startDate = new Date();
     interval = window.setInterval(printTime, 1000);
 }
 
 function stopTimer() {
     enableButton(startButtonElement);
+    disableButton(stopButtonElement);
     window.clearInterval(interval);
 
     timerListElement.innerHTML = '';
@@ -46,14 +48,9 @@ function stopTimer() {
     recordedTimes.push(currentTime);
 
     recordedTimes.forEach(timer => {
-        const liNode = document.createElement('LI');
-        const textNode = document.createTextNode(
-            `${convertToHumanReadableString(timer.time)} - ${timer.comment}`
-        );
-        liNode.appendChild(textNode);
-
-        timerListElement.appendChild(liNode);
+        addRecordedTime(timer);
     });
+
     sumElement.innerText = convertToHumanReadableString(
         arraySum(recordedTimes.map(_ => _.time))
     );
@@ -61,6 +58,15 @@ function stopTimer() {
     currentTimeDifferenceInMilliseconds = 0;
     currentTimerElement.innerText = '00 : 00 : 00';
     commentInputElement.value = '';
+}
+
+function addRecordedTime(timer) {
+    const liNode = document.createElement('LI');
+    const textNode = document.createTextNode(
+        `${convertToHumanReadableString(timer.time)} - ${timer.comment}`
+    );
+    liNode.appendChild(textNode);
+    timerListElement.appendChild(liNode);
 }
 
 function printTime() {
