@@ -8,12 +8,20 @@ let recordedTimes = [];
 const currentTimerElement = document.getElementById('current-timer');
 const startButtonElement = document.getElementById('start');
 const stopButtonElement = document.getElementById('stop');
+const saveButtonElement = document.getElementById('save');
+const loadButtonElement = document.getElementById('load');
 const timerListElement = document.getElementById('timer-list');
 const sumElement = document.getElementById('sum');
 const commentInputElement = document.getElementById('comment');
 
 function arraySum(array) {
     return array.reduce((a, b) => a + b, 0);
+}
+
+function setSum() {
+    sumElement.innerText = convertToHumanReadableString(
+        arraySum(recordedTimes.map(_ => _.time))
+    );
 }
 
 function disableButton(button) {
@@ -51,9 +59,7 @@ function stopTimer() {
         addRecordedTime(timer);
     });
 
-    sumElement.innerText = convertToHumanReadableString(
-        arraySum(recordedTimes.map(_ => _.time))
-    );
+    setSum();
 
     currentTimeDifferenceInMilliseconds = 0;
     currentTimerElement.innerText = '00 : 00 : 00';
@@ -67,6 +73,20 @@ function addRecordedTime(timer) {
     );
     liNode.appendChild(textNode);
     timerListElement.appendChild(liNode);
+}
+
+function setRecordedTimes(array) {
+    while (timerListElement.firstChild) {
+        timerListElement.removeChild(timerListElement.firstChild);
+    }
+
+    recordedTimes = array;
+
+    recordedTimes.forEach(time => {
+        addRecordedTime(time);
+    });
+
+    setSum();
 }
 
 function printTime() {
@@ -86,5 +106,26 @@ function convertToHumanReadableString(ms) {
     return `${hours}${delim}${minutes}${delim}${seconds}`;
 }
 
+function save() {
+    // delete old cookie
+    document.cookie =
+        'recordedTimes=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+    // create new cookie
+    const recordedTimesJson = JSON.stringify(recordedTimes);
+    document.cookie = `recordedTimes=${recordedTimesJson}; expires=Thu, 01 Jan 2100 00:00:00 UTC; path=/;`;
+}
+
+function load() {
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const arrayJson = decodedCookie.replace('recordedTimes=', '');
+    const array = JSON.parse(arrayJson);
+
+    setRecordedTimes(array);
+}
+
 startButtonElement.addEventListener('click', startTimer);
 stopButtonElement.addEventListener('click', stopTimer);
+
+saveButtonElement.addEventListener('click', save);
+loadButtonElement.addEventListener('click', load);

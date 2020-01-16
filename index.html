@@ -3,20 +3,21 @@
 
 <head>
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 </head>
 
 <body>
     <div class="container">
         <h1>Acht Gewinnt</h1>
-        <div class="row">
+        <div class="row mb-5">
             <div class="col">
                 <p>
                     <h2 id="current-timer">00 : 00 : 00</h2>
                     <input type="text" id="comment" class="form-control" placeholder="Comment.." />
                 </p>
 
-                <button id="start" class="btn btn-success"> Start</button>
-                <button id="stop" class="btn btn-dark"> Stop</button>
+                <button id="start" type="button" class="btn btn-success"> Start</button>
+                <button id="stop" type="button" class="btn btn-dark"> Stop</button>
             </div>
             <div class="col">
                 <ul id="timer-list"></ul>
@@ -25,6 +26,12 @@
                     <span>Summe: </span>
                     <span id="sum">0</span>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button id="save" type="button" class="btn btn-primary mr-2">Save</button>
+                <button id="load" type="button" class="btn btn-secondary">Load</button>
             </div>
         </div>
     </div>
