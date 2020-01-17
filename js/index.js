@@ -1,4 +1,6 @@
+import { disableButton, enableButton } from './button-helper.js';
 import RecordedTime from './RecordedTime.js';
+import { convertToHumanReadableString } from './string-helper.js';
 
 let interval;
 let startDate = new Date();
@@ -14,24 +16,19 @@ const timerListElement = document.getElementById('timer-list');
 const sumElement = document.getElementById('sum');
 const commentInputElement = document.getElementById('comment');
 
+// Daten nachladen
+fetch('https://jsonplaceholder.typicode.com/users/1')
+    .then(response => response.json())
+    .then(json => console.log(json));
+
 function arraySum(array) {
     return array.reduce((a, b) => a + b, 0);
 }
 
 function setSum() {
-    sumElement.innerText = convertToHumanReadableString(
-        arraySum(recordedTimes.map(_ => _.time))
-    );
-}
-
-function disableButton(button) {
-    button.disabled = true;
-    button.className += ' disabled';
-}
-
-function enableButton(button) {
-    button.disabled = false;
-    button.className = button.className.replace(' disabled', '');
+    const times = recordedTimes.map(_ => _.time);
+    const timesSum = arraySum(times);
+    sumElement.innerText = convertToHumanReadableString(timesSum);
 }
 
 function startTimer() {
@@ -96,29 +93,13 @@ function printTime() {
     );
 }
 
-function convertToHumanReadableString(ms) {
-    const delim = ' : ';
-    const showWith0 = value => (value < 10 ? `0${value}` : value);
-    const hours = showWith0(Math.floor((ms / (1000 * 60 * 60)) % 60));
-    const minutes = showWith0(Math.floor((ms / (1000 * 60)) % 60));
-    const seconds = showWith0(Math.floor((ms / 1000) % 60));
-
-    return `${hours}${delim}${minutes}${delim}${seconds}`;
-}
-
 function save() {
-    // delete old cookie
-    document.cookie =
-        'recordedTimes=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-    // create new cookie
     const recordedTimesJson = JSON.stringify(recordedTimes);
     document.cookie = `recordedTimes=${recordedTimesJson}; expires=Thu, 01 Jan 2100 00:00:00 UTC; path=/;`;
 }
 
 function load() {
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const arrayJson = decodedCookie.replace('recordedTimes=', '');
+    const arrayJson = document.cookie.replace('recordedTimes=', '');
     const array = JSON.parse(arrayJson);
 
     setRecordedTimes(array);
