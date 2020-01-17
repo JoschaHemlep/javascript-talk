@@ -7,16 +7,22 @@
 </head>
 
 <body>
+    <nav class="navbar sticky-top navbar-dark bg-dark mb-3">
+        <a class="navbar-brand" href="#">Acht Gewinnt</a>
+    </nav>
+
     <div class="container">
-        <h1>Acht Gewinnt</h1>
+
+
         <div class="row mb-5">
             
             <!-- Timer -->
-            <div class="col">
-                <p>
-                    <h2 id="current-timer">00 : 00 : 00</h2>
-                    <input type="text" id="comment" class="form-control" placeholder="Comment.." />
-                </p>
+            <div class="col border-right">
+                <h2>Timer</h2>
+                <div class="mb-4">
+                    <h3 id="current-timer">00 : 00 : 00</h2>
+                    <input type="text" id="comment" class="form-control form-control-sm" placeholder="Comment.." />
+                </div>
 
                 <button id="start" type="button" class="btn btn-success"> Start</button>
                 <button id="stop" type="button" class="btn btn-dark disabled" disabled> Stop</button>
@@ -24,6 +30,7 @@
 
             <!-- History -->
             <div class="col">
+                <h2>History</h2>
                 <ul id="timer-list"></ul>
                 <hr />
                 <div>
@@ -34,11 +41,9 @@
         </div>
 
         <!-- Save/Load Buttons -->
-        <div class="row">
-            <div class="col">
+        <div class="d-flex flex-row justify-content-end">
                 <button id="save" type="button" class="btn btn-primary mr-2">Save</button>
                 <button id="load" type="button" class="btn btn-secondary">Load</button>
-            </div>
         </div>
     </div>
 
