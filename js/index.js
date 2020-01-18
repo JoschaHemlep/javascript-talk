@@ -1,6 +1,6 @@
 import { disableButton, enableButton } from './button-helper.js';
 import RecordedTime from './RecordedTime.js';
-import { convertToHumanReadableString } from './string-helper.js';
+import { convertToHumanReadableString } from './time-helper.js/index.js';
 
 let interval;
 let startDate = new Date();
@@ -35,7 +35,7 @@ function startTimer() {
     disableButton(startButtonElement);
     enableButton(stopButtonElement);
     startDate = new Date();
-    interval = window.setInterval(printTime, 1000);
+    interval = window.setInterval(setCurrentTime, 1000);
 }
 
 function stopTimer() {
@@ -43,24 +43,26 @@ function stopTimer() {
     disableButton(stopButtonElement);
     window.clearInterval(interval);
 
-    timerListElement.innerHTML = '';
-    const comment = commentInputElement.value;
-    const currentTime = new RecordedTime(
-        currentTimeDifferenceInMilliseconds,
-        comment
-    );
-
-    recordedTimes.push(currentTime);
-
-    recordedTimes.forEach(timer => {
-        addRecordedTime(timer);
-    });
+    setRecordedTimes();
 
     setSum();
 
     currentTimeDifferenceInMilliseconds = 0;
     currentTimerElement.innerText = '00 : 00 : 00';
     commentInputElement.value = '';
+}
+
+function setRecordedTimes() {
+    timerListElement.innerHTML = '';
+    const comment = commentInputElement.value;
+    const currentTime = new RecordedTime(
+        currentTimeDifferenceInMilliseconds,
+        comment
+    );
+    recordedTimes.push(currentTime);
+    recordedTimes.forEach(timer => {
+        addRecordedTime(timer);
+    });
 }
 
 function addRecordedTime(timer) {
@@ -86,7 +88,7 @@ function setRecordedTimes(array) {
     setSum();
 }
 
-function printTime() {
+function setCurrentTime() {
     currentTimeDifferenceInMilliseconds = Math.abs(new Date() - startDate);
     currentTimerElement.innerHTML = convertToHumanReadableString(
         currentTimeDifferenceInMilliseconds
