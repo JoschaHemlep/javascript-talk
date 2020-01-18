@@ -1,6 +1,7 @@
+import { arraySum } from './array-helper.js';
 import { disableButton, enableButton } from './button-helper.js';
 import RecordedTime from './RecordedTime.js';
-import { convertToHumanReadableString } from './time-helper.js/index.js';
+import { convertToHumanReadableString } from './time-helper.js';
 
 let interval;
 let startDate = new Date();
@@ -16,17 +17,8 @@ const timerListElement = document.getElementById('timer-list');
 const sumElement = document.getElementById('sum');
 const commentInputElement = document.getElementById('comment');
 
-// Daten nachladen
-fetch('https://jsonplaceholder.typicode.com/users/1')
-    .then(response => response.json())
-    .then(json => console.log(json));
-
-function arraySum(array) {
-    return array.reduce((a, b) => a + b, 0);
-}
-
 function setSum() {
-    const times = recordedTimes.map(_ => _.time);
+    const times = recordedTimes.map(recordedTime => recordedTime.time);
     const timesSum = arraySum(times);
     sumElement.innerText = convertToHumanReadableString(timesSum);
 }
@@ -43,7 +35,7 @@ function stopTimer() {
     disableButton(stopButtonElement);
     window.clearInterval(interval);
 
-    setRecordedTimes();
+    addCurrentTimeToTimerList();
 
     setSum();
 
@@ -52,17 +44,17 @@ function stopTimer() {
     commentInputElement.value = '';
 }
 
-function setRecordedTimes() {
-    timerListElement.innerHTML = '';
+function addCurrentTimeToTimerList() {
     const comment = commentInputElement.value;
+
     const currentTime = new RecordedTime(
         currentTimeDifferenceInMilliseconds,
         comment
     );
+
     recordedTimes.push(currentTime);
-    recordedTimes.forEach(timer => {
-        addRecordedTime(timer);
-    });
+
+    refreshTimerList();
 }
 
 function addRecordedTime(timer) {
@@ -74,18 +66,22 @@ function addRecordedTime(timer) {
     timerListElement.appendChild(liNode);
 }
 
-function setRecordedTimes(array) {
+function setTimerListToArray(array) {
+    recordedTimes = array;
+
+    refreshTimerList();
+
+    setSum();
+}
+
+function refreshTimerList() {
     while (timerListElement.firstChild) {
         timerListElement.removeChild(timerListElement.firstChild);
     }
 
-    recordedTimes = array;
-
-    recordedTimes.forEach(time => {
-        addRecordedTime(time);
+    recordedTimes.forEach(timer => {
+        addRecordedTime(timer);
     });
-
-    setSum();
 }
 
 function setCurrentTime() {
@@ -104,7 +100,7 @@ function load() {
     const arrayJson = document.cookie.replace('recordedTimes=', '');
     const array = JSON.parse(arrayJson);
 
-    setRecordedTimes(array);
+    setTimerListToArray(array);
 }
 
 startButtonElement.addEventListener('click', startTimer);
