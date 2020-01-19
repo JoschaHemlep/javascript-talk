@@ -19,6 +19,6 @@ function login() {
 
     if (isConfirmed && isYes === 'yes') {
         // Navigation
-        location.href = location.origin + '/record-time.html';
+        location.pathname = '/record-time.html';
     }
 }
